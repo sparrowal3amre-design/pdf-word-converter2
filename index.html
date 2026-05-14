@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF ↔ WORD Converter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="glass-container">
+    <h1>PDF ↔ WORD</h1>
+
+    <form action="/convert" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" required>
+
+        <select name="mode">
+            <option value="pdf_to_word">PDF → Word</option>
+            <option value="word_to_pdf">Word → PDF</option>
+        </select>
+
+        <button type="submit">تحويل الملف</button>
+    </form>
+</div>
+
+</body>
+</html>
