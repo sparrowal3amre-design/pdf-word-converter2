@@ -10,56 +10,47 @@ font-family:'Cairo',sans-serif;
 
 height:100vh;
 
-overflow:hidden;
-
 display:flex;
 justify-content:center;
 align-items:center;
 
+overflow:hidden;
+
 background:
 linear-gradient(
 135deg,
-#57d4ff,
-#0b8dff
+#001f4d,
+#005eff,
+#00c3ff
 );
 
 position:relative;
 }
 
-.bg-blur{
+.bg{
 
 position:absolute;
 
-border-radius:50%;
+width:100%;
+height:100%;
 
-filter:blur(100px);
+background:
+radial-gradient(
+circle at top left,
+rgba(255,255,255,0.25),
+transparent 35%
+),
 
-opacity:0.5;
+radial-gradient(
+circle at bottom right,
+rgba(255,255,255,0.15),
+transparent 30%
+);
+
+filter:blur(10px);
 }
 
-.blur1{
-
-width:300px;
-height:300px;
-
-background:#ffffff;
-
-top:-100px;
-right:-100px;
-}
-
-.blur2{
-
-width:250px;
-height:250px;
-
-background:#0011ff;
-
-bottom:-80px;
-left:-80px;
-}
-
-.main-container{
+.container{
 
 width:100%;
 
@@ -68,13 +59,15 @@ justify-content:center;
 align-items:center;
 
 padding:20px;
+
+z-index:10;
 }
 
 .glass-card{
 
-width:420px;
+width:430px;
 
-padding:40px;
+padding:35px;
 
 border-radius:35px;
 
@@ -85,35 +78,48 @@ background:rgba(
 0.12
 );
 
-backdrop-filter:blur(18px);
+backdrop-filter:blur(25px);
 
 border:1px solid rgba(
 255,
 255,
 255,
-0.25
+0.18
 );
 
 box-shadow:
-0 8px 32px rgba(
+0 8px 40px rgba(
 0,
 0,
 0,
-0.25
+0.35
 );
 
-position:relative;
-z-index:10;
+animation:fade 1s ease;
 }
 
-.logo{
+@keyframes fade{
+
+from{
+opacity:0;
+transform:translateY(20px);
+}
+
+to{
+opacity:1;
+transform:translateY(0);
+}
+
+}
+
+.top{
 
 text-align:center;
 
-margin-bottom:35px;
+margin-bottom:30px;
 }
 
-.logo h1{
+.top h1{
 
 font-size:42px;
 
@@ -123,27 +129,103 @@ color:white;
 
 margin-bottom:10px;
 
-letter-spacing:1px;
+letter-spacing:2px;
 }
 
-.logo p{
+.top p{
 
 color:rgba(
 255,
 255,
 255,
-0.8
+0.85
 );
 
 font-size:15px;
 }
 
-.upload-box{
+.upload-area{
+
+display:block;
+
+width:100%;
+
+padding:30px;
+
+border-radius:25px;
+
+background:rgba(
+255,
+255,
+255,
+0.10
+);
+
+border:2px dashed rgba(
+255,
+255,
+255,
+0.25
+);
+
+cursor:pointer;
+
+transition:0.3s;
 
 margin-bottom:20px;
 }
 
-.upload-box input{
+.upload-area:hover{
+
+transform:scale(1.02);
+
+background:rgba(
+255,
+255,
+255,
+0.15
+);
+}
+
+.upload-area input{
+
+display:none;
+}
+
+.upload-content{
+
+text-align:center;
+
+color:white;
+}
+
+.upload-icon{
+
+font-size:50px;
+
+margin-bottom:10px;
+}
+
+.upload-content h3{
+
+font-size:22px;
+
+margin-bottom:8px;
+}
+
+.upload-content p{
+
+font-size:14px;
+
+opacity:0.8;
+}
+
+.select-wrapper{
+
+margin-bottom:20px;
+}
+
+select{
 
 width:100%;
 
@@ -151,7 +233,9 @@ padding:18px;
 
 border:none;
 
-border-radius:20px;
+outline:none;
+
+border-radius:18px;
 
 background:rgba(
 255,
@@ -162,42 +246,7 @@ background:rgba(
 
 color:white;
 
-font-size:15px;
-
-outline:none;
-
-backdrop-filter:blur(10px);
-}
-
-.select-box{
-
-margin-bottom:25px;
-}
-
-.select-box select{
-
-width:100%;
-
-padding:18px;
-
-border:none;
-
-border-radius:20px;
-
-background:rgba(
-255,
-255,
-255,
-0.15
-);
-
-color:white;
-
-font-size:15px;
-
-outline:none;
-
-cursor:pointer;
+font-size:16px;
 
 backdrop-filter:blur(10px);
 }
@@ -216,18 +265,18 @@ border:none;
 
 border-radius:20px;
 
-background:rgba(
-0,
-0,
-0,
-0.55
+background:
+linear-gradient(
+135deg,
+#001aff,
+#00bfff
 );
 
 color:white;
 
 font-size:18px;
 
-font-weight:600;
+font-weight:700;
 
 cursor:pointer;
 
@@ -236,48 +285,37 @@ transition:0.3s;
 
 button:hover{
 
-transform:translateY(-2px);
-
-background:rgba(
-0,
-0,
-0,
-0.75
-);
+transform:translateY(-3px);
 
 box-shadow:
-0 10px 25px rgba(
+0 10px 30px rgba(
 0,
 0,
 0,
-0.25
+0.35
 );
 }
 
-.features{
-
-margin-top:30px;
+.bottom{
 
 display:flex;
 
 justify-content:space-between;
 
-gap:10px;
+gap:12px;
+
+margin-top:25px;
 }
 
-.feature{
+.item{
 
 flex:1;
 
 padding:12px;
 
-border-radius:15px;
-
 text-align:center;
 
-font-size:13px;
-
-color:white;
+border-radius:15px;
 
 background:rgba(
 255,
@@ -286,13 +324,17 @@ background:rgba(
 0.10
 );
 
+color:white;
+
+font-size:13px;
+
 backdrop-filter:blur(10px);
 
 border:1px solid rgba(
 255,
 255,
 255,
-0.15
+0.10
 );
 }
 
@@ -302,15 +344,15 @@ border:1px solid rgba(
 
 width:100%;
 
-padding:30px 20px;
+padding:25px;
 }
 
-.logo h1{
+.top h1{
 
-font-size:32px;
+font-size:34px;
 }
 
-.features{
+.bottom{
 
 flex-direction:column;
 }
