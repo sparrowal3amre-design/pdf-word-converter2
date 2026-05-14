@@ -1,4 +1,0 @@
-Flask
-pdf2docx
-docx2pdf
-werkzeug
