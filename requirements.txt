@@ -1,3 +1,4 @@
-Flask
-pdf2docx
-werkzeug
+Flask==2.3.3
+pdf2docx==0.5.8
+docx2pdf==0.1.8
+Werkzeug==2.3.7
