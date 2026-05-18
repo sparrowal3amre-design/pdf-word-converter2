@@ -1,9 +1,9 @@
 from flask import Flask, render_template, request, send_file
 from pdf2docx import Converter
 from werkzeug.utils import secure_filename
-from docx2pdf import convert
 import os
-import shutil
+import subprocess
+import sys
 
 app = Flask(__name__)
 
@@ -25,61 +25,69 @@ def convert_file():
     if file.filename == "":
         return "No selected file"
 
-    # حفظ الملف المرفوع
     filename = secure_filename(file.filename)
     filepath = os.path.join(UPLOAD_FOLDER, filename)
     file.save(filepath)
     
-    output_path = None
-    
     try:
-        # التحويل من PDF إلى Word
         if mode == "pdf_to_word":
+            # التحويل من PDF إلى Word
             if not filename.lower().endswith('.pdf'):
-                return "File must be PDF for this conversion"
+                return "File must be PDF format"
             
             output_path = filepath.replace('.pdf', '.docx')
             cv = Converter(filepath)
             cv.convert(output_path)
             cv.close()
+            
+            return send_file(output_path, as_attachment=True)
         
-        # التحويل من Word إلى PDF
         elif mode == "word_to_pdf":
+            # التحويل من Word إلى PDF
             if not filename.lower().endswith('.docx'):
-                return "File must be DOCX for this conversion"
+                return "File must be DOCX format"
             
             output_path = filepath.replace('.docx', '.pdf')
-            convert(filepath, output_path)
+            
+            # استخدام python-docx2pdf كحل بديل (يعمل بدون LibreOffice)
+            try:
+                from docx2pdf import convert
+                convert(filepath, output_path)
+            except ImportError:
+                # إذا لم تكن docx2pdf مثبتة، نحاول استخدام LibreOffice
+                try:
+                    result = subprocess.run([
+                        "libreoffice",
+                        "--headless",
+                        "--convert-to",
+                        "pdf",
+                        "--outdir",
+                        UPLOAD_FOLDER,
+                        filepath
+                    ], capture_output=True, text=True)
+                    
+                    if result.returncode != 0:
+                        return f"Conversion failed: {result.stderr}"
+                except FileNotFoundError:
+                    return "Please install docx2pdf (pip install docx2pdf) or install LibreOffice"
+            
+            # التحقق من وجود ملف الإخراج
+            if os.path.exists(output_path):
+                return send_file(output_path, as_attachment=True)
+            else:
+                return "PDF file was not created"
         
         else:
             return "Invalid mode"
-        
-        # التحقق من وجود ملف الإخراج
-        if not os.path.exists(output_path):
-            return "Conversion failed - output file not created"
-        
-        # إرسال الملف المحول
-        return send_file(
-            output_path,
-            as_attachment=True,
-            download_name=os.path.basename(output_path)
-        )
     
     except Exception as e:
-        return f"Error during conversion: {str(e)}"
+        return f"Error: {str(e)}"
     
     finally:
-        # تنظيف الملفات المؤقتة (اختياري - حذف الملف الأصلي)
+        # حذف الملف الأصلي بعد التحويل
         if os.path.exists(filepath):
             try:
                 os.remove(filepath)
-            except:
-                pass
-        
-        # حذف ملف الإخراج بعد إرساله (للحفاظ على المساحة)
-        if output_path and os.path.exists(output_path):
-            try:
-                os.remove(output_path)
             except:
                 pass
 
