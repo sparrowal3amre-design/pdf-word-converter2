@@ -1,118 +1,82 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
-
+<html lang="ar">
 <head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
-
-<title>
-PDF ↔ WORD
-</title>
-
-<link rel="stylesheet"
-href="{{ url_for('static', filename='style.css') }}">
-
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap"
-rel="stylesheet">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF ↔ WORD</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-
 <body>
-
-<div class="bg"></div>
-
-<div class="container">
-
-<div class="glass-card">
-
-<div class="top">
-
-<h1>
-PDF ↔ WORD
-</h1>
-
-<p>
-تحويل الملفات بسرعة ودقة عالية
-</p>
-
-</div>
-
-<form
-action="/convert"
-method="POST"
-enctype="multipart/form-data">
-
-<label class="upload-area">
-
-<input
-type="file"
-name="file"
-required>
-
-<div class="upload-content">
-
-<div class="upload-icon">
-☁
-</div>
-
-<h3>
-رفع الملف
-</h3>
-
-<p>
-اسحب الملف أو اضغط هنا
-</p>
-
-</div>
-
-</label>
-
-<div class="select-wrapper">
-
-<select name="mode">
-
-<option value="pdf_to_word">
-PDF → Word
-</option>
-
-<option value="word_to_pdf">
-Word → PDF
-</option>
-
-</select>
-
-</div>
-
-<button type="submit">
-
-تحويل الملف
-
-</button>
-
-</form>
-
-<div class="bottom">
-
-<div class="item">
-⚡ سريع
-</div>
-
-<div class="item">
-🔒 آمن
-</div>
-
-<div class="item">
-✨ احترافي
-</div>
-
-</div>
-
-</div>
-
-</div>
-
+    <div class="glass-container">
+        <h1>PDF ↔ WORD</h1>
+        
+        <form action="/convert" method="POST" enctype="multipart/form-data" id="convertForm">
+            <input type="file" name="file" id="fileInput" required>
+            <select name="mode" id="modeSelect">
+                <option value="pdf_to_word">PDF → Word</option>
+                <option value="word_to_pdf">Word → PDF</option>
+            </select>
+            <button type="submit">تحويل الملف</button>
+        </form>
+        
+        <div id="message" class="message"></div>
+    </div>
+    
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const modeSelect = document.getElementById('modeSelect');
+        const form = document.getElementById('convertForm');
+        const messageDiv = document.getElementById('message');
+        
+        // تغيير قبول الملفات حسب الوضع المختار
+        modeSelect.addEventListener('change', function() {
+            if (this.value === 'pdf_to_word') {
+                fileInput.accept = '.pdf';
+                fileInput.placeholder = 'اختر ملف PDF';
+            } else {
+                fileInput.accept = '.docx';
+                fileInput.placeholder = 'اختر ملف Word';
+            }
+        });
+        
+        // تفعيل التغيير عند التحميل
+        modeSelect.dispatchEvent(new Event('change'));
+        
+        // التحقق من صحة الملف قبل الإرسال
+        form.addEventListener('submit', function(e) {
+            const file = fileInput.files[0];
+            if (!file) {
+                e.preventDefault();
+                showMessage('الرجاء اختيار ملف أولاً', 'error');
+                return;
+            }
+            
+            const mode = modeSelect.value;
+            const fileName = file.name;
+            const fileExt = '.' + fileName.split('.').pop().toLowerCase();
+            
+            if (mode === 'pdf_to_word' && fileExt !== '.pdf') {
+                e.preventDefault();
+                showMessage('الرجاء اختيار ملف PDF', 'error');
+            } else if (mode === 'word_to_pdf' && fileExt !== '.docx') {
+                e.preventDefault();
+                showMessage('الرجاء اختيار ملف Word (DOCX)', 'error');
+            } else {
+                showMessage('جاري التحويل... يرجى الانتظار', 'info');
+            }
+        });
+        
+        function showMessage(msg, type) {
+            messageDiv.textContent = msg;
+            messageDiv.className = 'message ' + type;
+            
+            if (type !== 'info') {
+                setTimeout(() => {
+                    messageDiv.textContent = '';
+                    messageDiv.className = 'message';
+                }, 5000);
+            }
+        }
+    </script>
 </body>
 </html>
